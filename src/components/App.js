@@ -1,4 +1,4 @@
-import React from 'react' 
+import React from 'react'
 
 import Modal from "./Modal";
 import Header from "./Header";
@@ -10,31 +10,32 @@ import Footer from "./Footer";
 import "../css/App.css";
 
 
-import {useState,useEffect} from "react";
+import { useState, useEffect } from "react";
+import MovieContext from '../context/MovieContext';
+import ModalContext from '../context/ModalContext';
 
 
 const App = () => {
 
-    const [movies,setMovies] = useState([]);
+    const [movies, setMovies] = useState([]);
     const [modal, setModal] = useState({
-        msg :'',
+        msg: '',
         visible: false
     });
 
 
-    const [addFormState , setAddFormState] = useState(false);
+    const [addFormState, setAddFormState] = useState(false);
 
 
-    const filterMovies = (input)=>{
+    const filterMovies = (input) => {
 
-        let newMovies = movies.filter((movie)=>{
+        let newMovies = movies.filter((movie) => {
 
             return movie.title.includes(input)
         })
 
         //if the user deletes all characters from the text box
-        if(input === "" )
-        {
+        if (input === "") {
             newMovies = JSON.parse(localStorage.getItem("movies"));
         }
 
@@ -42,83 +43,85 @@ const App = () => {
         setMovies(newMovies);
     }
 
-    const toogleAddForm= ()=>{
+    const toogleAddForm = () => {
 
 
         setAddFormState(!addFormState);
     }
 
 
-    const hideModal = ()=>{
+    const hideModal = () => {
 
         setModal({
-            msg:"",
-            visible:false
+            msg: "",
+            visible: false
         })
     }
 
-    const addMovie = (newMovie)=>
-    {
+    const addMovie = (newMovie) => {
 
-       
 
-        localStorage.setItem("movies",JSON.stringify([...movies,newMovie]));
 
-        setMovies([...movies,newMovie]);
+        localStorage.setItem("movies", JSON.stringify([...movies, newMovie]));
+
+        setMovies([...movies, newMovie]);
 
         setModal({
-            msg:`${newMovie.title} was added successfully!`,
-            visible:true
+            msg: `${newMovie.title} was added successfully!`,
+            visible: true
         })
 
     }
 
 
-    const deleteMovie = (id)=>{
+    const deleteMovie = (id) => {
 
-            
-      const newMovies =   movies.filter((movie)=>{
 
-        return movie.id !== id
-      })
+        const newMovies = movies.filter((movie) => {
 
-    
-       localStorage.setItem("movies",JSON.stringify(newMovies));
+            return movie.id !== id
+        })
 
-       setMovies(newMovies);
 
-       setModal({
-        msg:`The movie with the id ${id} was sucessfully deleted`,
-        visible:true
-    })
+        localStorage.setItem("movies", JSON.stringify(newMovies));
+
+        setMovies(newMovies);
+
+        setModal({
+            msg: `The movie with the id ${id} was sucessfully deleted`,
+            visible: true
+        })
 
     }
 
 
     //Useeffect will fire off when the componenthas finish loading
-    useEffect(()=>{
+    useEffect(() => {
 
-            if(localStorage.getItem("movies"))
-            {
-                const newMovies = JSON.parse(localStorage.getItem("movies"));
+        if (localStorage.getItem("movies")) {
+            const newMovies = JSON.parse(localStorage.getItem("movies"));
 
-                setMovies(newMovies);
-            }
+            setMovies(newMovies);
+        }
 
-    },[])
+    }, [])
 
 
 
     return (
-        <div  className="container">
-            <Modal onHide={hideModal}   modalState={modal}/>
-            <Header  onToogleAddForm= {toogleAddForm}/>
-            <SearchBox  onFilter={filterMovies}/>
-            <main>
-                <AddMovieForm addFormState={addFormState} onAddMovie={addMovie}/>
-                <MovieList  movies={movies} onDeleteMovie = {deleteMovie}/>
-            </main>
-            <Footer/>
+        <div className="container">
+            <MovieContext.Provider value={{ movies, deleteMovie, addMovie, addFormState }}>
+                <ModalContext.Provider value = {{modal,hideModal,toogleAddForm,filterMovies}}>
+                    <Modal/>
+                    <Header/>
+                    <SearchBox/>
+                    <main>
+                        <AddMovieForm />
+                        <MovieList />
+                    </main>
+                    <Footer />
+                </ModalContext.Provider>
+            </MovieContext.Provider>
         </div>
     )
 }

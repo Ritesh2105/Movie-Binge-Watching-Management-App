@@ -1,10 +1,10 @@
-import React from 'react'
+import {useState,useContext} from "react"
+import ModalContext from "../context/ModalContext";
 
-import {useState} from "react"
-
-const SearchBox = (props) => {
+const SearchBox = () => {
 
     const [searchBox ,setSearchBox] = useState("")
+    const {filterMovies} = useContext(ModalContext);
 
     return (
         <section className="search-box-container">
@@ -14,7 +14,7 @@ const SearchBox = (props) => {
                 value={searchBox}  onChange={(evt)=>{
                     
                     setSearchBox(evt.target.value);
-                    props.onFilter(evt.target.value);
+                    filterMovies(evt.target.value);
 
                    
                 }}/>

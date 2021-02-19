@@ -1,105 +1,97 @@
-import React from 'react';
+import { useState, useContext } from "react";
+import MovieContext from "../context/MovieContext";
 
-import {useState} from "react";
+const AddMovieForm = () => {
+    const { addMovie, addFormState } = useContext(MovieContext);
 
-
-
-
-const AddMovieForm = (props) => {
-
-    const [title, setTitle]  = useState("");
-    const [description, setDescription]  = useState("");
-    const [errorTitle, setErrorTitle]  = useState("");
-    const [errorDescription, setErrorDescription]  = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [errorTitle, setErrorTitle] = useState("");
+    const [errorDescription, setErrorDescription] = useState("");
 
 
-    const validateForm = (props)=>{
+    const validateForm = () => {
 
         let isValidated = true;
 
-           if(title === "")
-            {
-                setErrorTitle("You must enter a title");
-                isValidated=false;
-            }
+        if (title === "") {
+            setErrorTitle("You must enter a title");
+            isValidated = false;
+        }
 
-            else
-            {
-                setErrorTitle("")
-            }
+        else {
+            setErrorTitle("")
+        }
 
 
-            if(description === "")
-            {
-                setErrorDescription("You must enter a description");
-                isValidated=false;
-            }
+        if (description === "") {
+            setErrorDescription("You must enter a description");
+            isValidated = false;
+        }
 
-            else
-            {
-                setErrorDescription("")
-            }
+        else {
+            setErrorDescription("")
+        }
 
 
-            return isValidated;
-    
+        return isValidated;
+
     }
 
 
     return (
-        <section className ={props.addFormState ? "" : "hide"}>
-        <form>
-            <div className="form-control-container">
+        <section className={addFormState ? "" : "hide"}>
+            <form>
+                <div className="form-control-container">
 
-                <label htmlFor="title"> Title</label>
+                    <label htmlFor="title"> Title</label>
 
-                <input className="form-control" type="text" id="title"  value={title} onChange={(event)=>{
+                    <input className="form-control" type="text" id="title" value={title} onChange={(event) => {
 
 
-                       setTitle(event.target.value);
+                        setTitle(event.target.value);
 
-                }}/>
-                <span className="error">{errorTitle}</span>
+                    }} />
+                    <span className="error">{errorTitle}</span>
 
-            </div>
+                </div>
 
-            <div className="form-control-container">
-                
-                <label htmlFor="description"> Description</label>
-                <textarea className="form-control" id="description" value={description} onChange={(event)=>{
-                     setDescription(event.target.value);
-                }}></textarea>
+                <div className="form-control-container">
 
-                <span className="error">{errorDescription}</span>
-            
-            </div>
-        
-            <div className="form-control-container">
-                <button  className="btn btn-primary" type="button" onClick={()=>{
+                    <label htmlFor="description"> Description</label>
+                    <textarea className="form-control" id="description" value={description} onChange={(event) => {
+                        setDescription(event.target.value);
+                    }}></textarea>
 
-                        if(validateForm())
-                        {
-                           const newMovie={
-                               id :  Math.floor(Math.random() *500000 ) + 1,
-                               title,
-                               description
-                           }
+                    <span className="error">{errorDescription}</span>
 
-                           props.onAddMovie(newMovie)
+                </div>
 
-                           //clear the title and description
+                <div className="form-control-container">
+                    <button className="btn btn-primary" type="button" onClick={() => {
 
-                           //clear the state after the movies is added
-                           setTitle("");
-                           setDescription("")
+                        if (validateForm()) {
+                            const newMovie = {
+                                id: Math.floor(Math.random() * 500000) + 1,
+                                title,
+                                description
+                            }
+
+                            addMovie(newMovie)
+
+                            //clear the title and description
+
+                            //clear the state after the movies is added
+                            setTitle("");
+                            setDescription("")
 
                         }
 
 
-                }}>Save movie</button>
-            </div>  
-        </form>
-    </section>
+                    }}>Save movie</button>
+                </div>
+            </form>
+        </section>
     )
 }
 
